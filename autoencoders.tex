@@ -2,7 +2,7 @@
 \usepackage{amsfonts,amsmath,oldgerm}
 \usepackage{tikz}
 \usepackage[portuguese]{babel}
-\usetikzlibrary{arrows.meta,calc}
+\usetikzlibrary{arrows.meta,calc, positioning}
 \usetheme{sintef}
 
 \newcommand{\testcolor}[1]{\colorbox{#1}{\textcolor{#1}{test}}~\texttt{#1}}
@@ -57,11 +57,11 @@
     \framesubtitle{}
 
     \begin{figure}[h]
-                \centering
-                \includegraphics[width=0.55\textwidth]{assets/autoencoder_mnist_example.png}
-                \caption{Estrutura de um autoencoder com representação latente\footnote{Figura de Umberto Michelucci \cite{UmbertoMichelucci2022}}.}
-                \label{fig:autoencoders}
-            \end{figure}
+        \centering
+        \includegraphics[width=0.55\textwidth]{assets/autoencoder_mnist_example.png}
+        \caption{Estrutura de um autoencoder com representação latente\footnote{Figura de Umberto Michelucci \cite{UmbertoMichelucci2022}}.}
+        \label{fig:autoencoders}
+    \end{figure}
     \vspace{-2mm}
     \begin{itemize}
         \item \textbf{Encoder:} $f_\theta: \mathcal{X} \rightarrow \mathcal{H}$ onde $h = f_\theta(x)$
@@ -156,7 +156,7 @@
 \begin{itemize}
     \item Autoencoders são treinados para copiar a entrada para a saída, mas o objetivo real é aprender representações úteis dos dados.
 
-    \item Para isso, impõe-se que a dimensão do \textit{espaço latente} satisfaça 
+    \item Para isso, impõe-se que a dimensão do \textit{espaço latente} satisfaça
     $\dim(h) < \dim(x)$, formando um \textit{autoencoder undercomplete}, o que força o modelo a capturar as características mais relevantes da distribuição dos dados.
 
     \item O treinamento consiste em minimizar a função de perda:
@@ -169,12 +169,12 @@
 
 
 \begin{frame}{Undercomplete Autoenconders: Correspondência com PCA/SVD}
-    \textbf{PCA e Autoencoders:} 
-    Quando o decoder é linear e $L$ é o erro quadrático médio (MSE), 
+    \textbf{PCA e Autoencoders:}
+    Quando o decoder é linear e $L$ é o erro quadrático médio (MSE),
     um autoencoder undercomplete aprende a abranger o mesmo subespaço que o PCA.
     \vspace{3mm}
 
-    Isso ocorre porque, sob linearidade e codificação com dimensão reduzida, 
+    Isso ocorre porque, sob linearidade e codificação com dimensão reduzida,
     o autoencoder busca a melhor reconstrução no sentido dos mínimos quadrados,
     exatamente como o PCA.
 \end{frame}
@@ -188,7 +188,7 @@
     \]
 
     \vspace{2mm}
-    
+
     Se escolhemos $D$ e $E$ como matrizes (mapeamentos lineares), o problema é:
 
     \[
@@ -199,7 +199,7 @@
 
     \begin{itemize}
         \item \(A = DE\)
-        \item \(\min_{A,D,E}\ \frac{1}{2}\|X - AX\|_F^2 
+        \item \(\min_{A,D,E}\ \frac{1}{2}\|X - AX\|_F^2
                \quad \text{sujeito a } A = DE.\)
         \item   A restrição $A = DE$ é o que torna o problema não convexo.
     \end{itemize}
@@ -279,7 +279,7 @@
 
 \begin{frame}{Interpretação: Relação Explícita com PCA}
 
-    A matriz $U$ contém os \textbf{autovetores} dos dados —  
+    A matriz $U$ contém os \textbf{autovetores} dos dados —
     exatamente as \textbf{direções principais} do PCA.
 
     \vspace{3mm}
@@ -287,7 +287,7 @@
     Portanto, a solução ótima do autoencoder linear é:
 
     \[
-        E^\star = U^\top 
+        E^\star = U^\top
         \quad \text{(projeção para o espaço PCA)}
     \]
 
@@ -368,11 +368,214 @@
 
 \end{frame}
 
+\section{Denoising Autoencoders (DAE)}
+
+
+\begin{frame}{Denoising Autoencoders (DAE)}
+    \begin{columns}
+        \begin{column}{0.65\textwidth}
+            \begin{itemize}
+                \item \textbf{Definição:} O \textit{Denoising Autoencoder} (DAE) é um autoencoder que recebe uma entrada ruidosa e é treinado para reconstruir a versão limpa dessa entrada na saída \cite{Goodfellow-et-al-2016}.
+
+                \item \textbf{Objetivo:} Minimizar a função custo:
+                $$
+                L(\bold{x}, g(f(\bold{\tilde{x}})))
+                $$
+
+
+                \begin{itemize}
+                    \item $\bold{x}$: entrada original.
+                    \item $\bold{\tilde{x}}$: entrada corrompida com ruído.
+                    \item $C(\tilde{x} \mid x)$: processo de corrupção que adiciona ruído à entrada.
+                    \item $f$: função do encoder.
+                    \item $g$: função do decoder.
+                \end{itemize}
+
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.35\textwidth}
+            \begin{tikzpicture}[
+                node distance=1.5cm and 2cm,
+                auto,
+                >=Stealth,
+                % every node/.style={draw, circle, minimum size=1.2cm, very thick} % Aplicando estilo a todos
+                ]
+                % 1. Definir o nó h como referência
+                \node[draw, circle, minimum size=1.2cm, very thick] (h) {$h$};
+
+                % 2. Definir xtilde (acima e à esquerda de h no diagrama original)
+                % Usamos 'below left of h' para h ficar acima e à direita de xtilde
+                \node[below left=1.5cm and 0.5cm of h, draw, circle, minimum size=1.2cm, very thick] (xtilde) {$\tilde{x}$};
+
+                % 3. Definir L (abaixo e à direita de h)
+                \node[below right=1.5cm and 0.1cm of h, draw, circle, minimum size=1.2cm, very thick] (L) {$L$};
+
+                % 4. Definir x (abaixo e à esquerda/centro)
+                % Agora, vamos posicionar x mais à direita, alinhado verticalmente com o xtilde,
+                % mas com um pequeno deslocamento horizontal à direita.
+                \node[below right=1.5cm and -0.7cm of xtilde, draw, circle, minimum size=1.2cm, very thick] (x) {$x$}; % Mudei a referência e a distância
+
+                % Desenha as setas (arestas) e adiciona os rótulos
+                % x -> xtilde com rótulo C(xtilde | x)
+                \draw[->] (x) -- node[left] {$C(\tilde{x} \mid x)$} (xtilde);
+
+                % xtilde -> h com rótulo f
+                \draw[->] (xtilde) -- node[above left] {$f$} (h);
+
+                % h -> L com rótulo g
+                \draw[->] (h) -- node[right] {$g$} (L);
+
+                % x -> L (direto)
+                \draw[->] (x) -- (L);
+            \end{tikzpicture}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Motivação para DAE}
+
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.55\textwidth]{assets/dae_mnist_example.png}
+        % \caption{Estrutura de um DAE com representação latente.}
+        \label{fig:dae}
+    \end{figure}
+    \vspace{-7mm}
+
+    \begin{itemize}
+        \item \textbf{Robustez a Ruído:} DAEs aprendem a extrair características robustas dos dados, ignorando variações irrelevantes causadas por ruído \cite{Vincent2008ExtractingAC}. Isso é análogo a perspectiva humana de reconhecer objetos/formas/contextos quando os mesmos estão parcialmente ocultos ou corrompidos.
+        \item \textbf{Melhoria na Generalização:} Ao aprender a reconstruir entradas limpas a partir de versões ruidosas, DAEs podem melhorar a capacidade de generalização do modelo.
+        \item \textbf{Aprendizado de Representações Significativas:} DAEs incentivam o modelo a capturar estruturas subjacentes nos dados, levando a representações latentes mais informativas.
+    \end{itemize}
+\end{frame}
+\begin{frame}{Ruído de Entrada em DAE}
+
+    \begin{table}[h]
+        \centering
+        \small
+        \begin{tabular}{ l | p{6cm}}
+            \hline
+            \textbf{Tipo de Ruído} & \textbf{Descrição} \\
+            \hline\hline
+            Ruído Gaussiano & $\tilde{x} = x + \epsilon$, $\epsilon \sim \mathcal{N}(0, \sigma^2I)$\\
+            Masking Noise & $\tilde{x}_i = \begin{cases} 0 & \text{prob. } \nu \\ x_i & \text{prob. } 1-\nu \end{cases}$ \\
+            Salt-and-Pepper Noise & $\tilde{x}_i = \begin{cases} 0 & \text{prob. } \nu/2 \\ 1 & \text{prob. } \nu/2 \\ x_i & \text{prob. } 1-\nu \end{cases}$ \\
+            \hline
+        \end{tabular}
+        \caption{Tipos comuns de ruído utilizados em DAE.}
+        \label{tab:noise_types}
+    \end{table}
+
+\end{frame}
+
+
+
+\begin{frame}{Função Custo}
+
+    A função custo geral para um DAE é dada por:
+    $$
+    L_{DAE}(\theta, \phi) = \mathbb{E}_{x \sim \mu_{ref}, \tilde{x} \sim C(\tilde{x} \mid x)} [L(x, g_{\phi}(f_{\theta}(\tilde{x})))]
+    $$
+
+    Onde:
+    \begin{itemize}
+        \item $x$: entrada original amostrada de uma distribuição de referência $\mu_{ref}$.
+        \item $\tilde{x}$: entrada corrompida com ruído amostrada de uma distribuição condicional $C(\tilde{x} \mid x)$.
+        \item $f_\theta$: função do encoder parametrizada por $\theta$.
+        \item $g_\phi$: função do decoder parametrizada por $\phi$.
+    \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Função Custo}
+    Algumas escolhas comuns para a função de perda incluem:
+    \begin{itemize}
+        \item \textbf{Mean Squared Error (MSE):}\\
+        \vspace{5mm}
+        \centering
+        $L(x, \tilde{x}) = \|x - \tilde{x}\|_2^2$\\
+
+        \raggedright
+        \item \textbf{Cross-Entropy Loss:}\\
+        \vspace{5mm}
+        \centering
+        $L(x, \tilde{x}) = -\sum_{i} [x_i \log(\tilde{x}_i) + (1 - x_i) \log(1 - \tilde{x}_i)]$
+    \end{itemize}
+\end{frame}
+\begin{frame}{Score Matching e DAE}
+
+    \textbf{Score Matching:} Técnica de estimação de densidade que visa aprender o gradiente do logaritmo da densidade de probabilidade dos dados, conhecido como \textit{score function} \cite{Hyvarinen2005EstimationON}. Aprender o gradiente do logaritmo da densidade de probabilidade é uma maneira alternativa de aprender a estrutura da densidade de probabilidade dos dados \cite{Goodfellow-et-al-2016}.
+    \vspace{-2mm}
+    $$
+    \nabla_x \log p_{data}(x)
+    $$
+
+    \vspace{-2mm}
+
+    \textbf{Resultado Teórico \cite{Vincent2011}:} Para ruído Gaussiano pequeno ($\sigma \to 0$), treinar um DAE é equivalente a estimar o score da distribuição de dados:
+    \vspace{-2mm}
+    $$
+    \nabla_x \log p_{data}(x) \approx \frac{g(f(x)) - x}{\sigma^2}
+    $$
+
+    \vspace{-2mm}
+
+    \textbf{Implicações:} Isso sugere que DAEs não apenas aprendem a reconstruir entradas limpas, mas também capturam informações sobre a estrutura subjacente da distribuição dos dados.
+\end{frame}
+
+
+\begin{frame}{Interpretação Geométrica - Manifold}
+    Mas o que exatamente o DAE está aprendendo?
+    \begin{itemize}
+        \item \textbf{Hipótese:} Dados reais residem em um \textbf{variedade} (manifold) $\mathcal{M}$ de dimensão $d' \ll d$ \ $\mathbb{R}^d$
+        \item \textbf{Exemplos:} Imagens naturais, sinais de áudio, etc.
+        \item \textbf{Ruído:} Adiciona pequenas perturbações que movem os pontos para fora da variedade $\mathcal{M}$
+    \end{itemize}
+
+    Podemos dizer então que o DAE está aprendendo a projetar pontos ruidosos de volta para essa variedade $\mathcal{M}$ \cite{Vincent2008ExtractingAC}\cite{alain2014regularizedautoencoderslearndata}.
+
+\end{frame}
+\begin{frame}{Interpretação Geométrica - Manifold}
+     \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.65\textwidth]{assets/manifold_dae.png}
+        \caption{Em verde, o vetor resultante de $g(f(\tilde{x})) - \tilde{x}$ . Em vermelho, os dados originais sem corrupção por ruído. Em cinza, o dado corrompido gerado a partir de uma perturbação equiprovável gerando uma amostra de $C(\tilde{x}|x)$.}
+        \label{fig:manifold_dae}
+    \end{figure}
+
+\end{frame}
+\begin{frame}{Treino vs. Teste em DAE}
+    Na fase de treino:
+    \begin{itemize}
+        \item Entrada corrompida com ruído: $\tilde{x} \sim C(\tilde{x} \mid x)$
+        \item Alvo: $x$
+        \item Objetivo: reconstruir a entrada limpa $x$ a partir de $\tilde{x}$
+    \end{itemize}
+\end{frame}
+\begin{frame}{Treino vs. Teste em DAE}
+    Na fase de teste/produção, tipicamente, temos duas possibilidades:
+    \begin{itemize}
+        \item Usar o DAE como um autoencoder padrão:.
+        \begin{itemize}
+            \item Entrada: $x$
+            \item Saída de interesse: $h = f(x)$ (tipicamente)
+            \item Objetivo: obter uma representação robusta dos dados de entrada, já que o modelo foi treinado para aprender mais características relevantes do que numa aplicação padrão.
+        \end{itemize}
+        \item Usar o DAE para denoising:
+        \begin{itemize}
+            \item Entrada: $\tilde{x}$
+            \item Saída de interesse: $g(f(\tilde{x}))$
+            \item Objetivo: remover o ruído da entrada, aproveitando a capacidade do DAE de aprender a reconstruir entradas limpas a partir de versões ruidosas.
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+
 \section{Referências Bibliográficas}
 \begin{frame}[allowframebreaks]
-        \frametitle{Referências Bibliográficas}
-        \bibliographystyle{ieeetr}
-        \bibliography{presentation_bib.bib}
+    \frametitle{Referências Bibliográficas}
+    \bibliographystyle{ieeetr}
+    \bibliography{presentation_bib.bib}
 \end{frame}
 
 \backmatter
