@@ -149,6 +149,69 @@
 
 \end{frame}
 
+\section{Considerações sobre Arquitetura}
+
+\begin{frame}{Autoencoders neurais: Número de camadas}
+
+    \textbf{Teorema do Aproximador Universal:} Redes neurais com uma única camada oculta podem aproximar qualquer função contínua.
+
+    \vspace{4mm}
+
+    \textbf{Autoencoders profundos:} Na prática, encoder e decoders possuem pelo menos uma camada oculta cada
+    \begin{itemize}
+        \item Maior capacidade de modelagem
+        \item Podem aprender representações hierárquicas
+        \item Podem ser treinados camada a camada (greedy layer-wise pretraining)
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Dimensão do Espaço Latente}
+
+  \textbf{Subcompletos} (undercomplete): Espaço latente tem dimensão menor que a entrada ($\dim(\mathcal{H}) < \dim(\mathcal{X})$)
+  \begin{itemize}
+    \item Forçam compactação dos dados (com perdas)
+    \item Encoders e decoders não podem ser bons demais
+  \end{itemize}
+
+  \vspace{4mm}
+
+  \textbf{Sobrecompletos} (overcomplete): Espaço latente pode ter dimensão maior que a entrada ($\dim(\mathcal{H}) > \dim(\mathcal{X})$)
+  \begin{itemize}
+    \item Risco de aprender a função identidade
+    \item Usam \textbf{regularização} para conferir características desejáveis
+  \end{itemize}
+
+\end{frame}
+
+\section{Autoencoders com regularização}
+\begin{frame}{Autoencoders com regularização}
+
+  Técnicas que adicionam \textbf{termos de regularização} ou modificam o processo de treinamento para melhorar a qualidade das representações aprendidas. São frequentemente \textbf{sobrecompletos}.
+
+  \vspace{4mm}
+
+  \begin{itemize}
+    \item \textbf{Autoencoders Esparsos:} Força esparsidade na representação latente
+    \item \textbf{Denoising Autoencoders:} Perturba a entrada com ruído e reconstrói a entrada limpa
+    \item \textbf{Contractive Autoencoders:} Penaliza o jacobiano do encoder em relação à entrada
+    \item \textbf{Variational Autoencoders:} Espaço latente se torna uma distribuição probabilística
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Sparse Autoencoders}
+
+    \textbf{Objetivo:} Forçar a representação latente a ser esparsa, ou seja, a maioria dos neurônios na camada latente deve estar inativa (valores próximos de zero).
+
+    \vspace{2mm}
+
+    \textbf{Função de Custo Modificada:}
+    $$
+    L(\theta, \phi) = \|x - \hat{x}\|^2_2 + \alpha \|h\|_1
+    $$
+
+\end{frame}
+
 \section{Referências Bibliográficas}
 \begin{frame}[allowframebreaks]
         \frametitle{Referências Bibliográficas}
