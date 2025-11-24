@@ -149,6 +149,162 @@
 
 \end{frame}
 
+\section{Undercomplete Autoencoders com redes neurais}
+
+\begin{frame}{Undercomplete Autoenconder}
+
+\begin{itemize}
+    \item Autoencoders são treinados para copiar a entrada para a saída, mas o objetivo real é aprender representações úteis dos dados.
+
+    \item Para isso, impõe-se que a dimensão do \textit{espaço latente} satisfaça 
+    $\dim(h) < \dim(x)$, formando um \textit{autoencoder undercomplete}, o que força o modelo a capturar as características mais relevantes da distribuição dos dados.
+
+    \item O treinamento consiste em minimizar a função de perda:
+    \[
+        L(x, g(f(x))),
+    \]
+    onde $L$ mede quão diferente $g(f(x))$ está de $x$ (por exemplo, usando MSE).
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Undercomplete Autoenconders: Correspondência com PCA/SVD}
+    \textbf{PCA e Autoencoders:} 
+    Quando o decoder é linear e $L$ é o erro quadrático médio (MSE), 
+    um autoencoder undercomplete aprende a abranger o mesmo subespaço que o PCA.
+    \vspace{3mm}
+
+    Isso ocorre porque, sob linearidade e codificação com dimensão reduzida, 
+    o autoencoder busca a melhor reconstrução no sentido dos mínimos quadrados,
+    exatamente como o PCA.
+\end{frame}
+
+\begin{frame}{Formulação do Problema}
+
+    O objetivo de um autoencoder linear é resolver:
+
+    \[
+        \min_{D,E}\ \frac{1}{2}\|X - D(E(X))\|_F^2.
+    \]
+
+    \vspace{2mm}
+    
+    Se escolhemos $D$ e $E$ como matrizes (mapeamentos lineares), o problema é:
+
+    \[
+        \min_{D,E}\ \frac{1}{2}\|X - DEX\|_F^2.
+    \]
+
+    Introduzimos uma variável auxiliar:
+
+    \begin{itemize}
+        \item \(A = DE\)
+        \item \(\min_{A,D,E}\ \frac{1}{2}\|X - AX\|_F^2 
+               \quad \text{sujeito a } A = DE.\)
+        \item   A restrição $A = DE$ é o que torna o problema não convexo.
+    \end{itemize}
+    \vspace{2mm}
+\end{frame}
+
+
+
+\begin{frame}{Relaxação: Ignorando a Restrição}
+    Ignorando por um momento a restrição $A = DE$:
+
+    \begin{itemize}
+        \item O problema vira mínimos quadrados clássico.
+        \item Uma solução analítica está disponível.
+    \end{itemize}
+
+    A solução é:
+
+    \[
+    A^\star = (X X^\top)^{-1}(X X^\top).
+    \]
+
+    Se $(X X^\top)$ é inversível:
+
+    \[
+    A^\star = I,
+    \]
+
+    ou seja, o mapeamento ótimo (sem a restrição) seria a identidade.
+\end{frame}
+
+
+\begin{frame}{Usando a SVD de \(X X^\top\)}
+    Como $X X^\top$ é quadrada, sua decomposição SVD é:
+
+    \[
+    X X^\top = U S U^\top,
+    \]
+
+    onde $U$ é ortogonal e $S$ contém os autovalores.
+
+    Substituindo na solução:
+
+    \[
+    A^\star = (U S U^\top)^{-1}(U S U^\top)
+    \]
+
+    \[
+    = (U^\top)^{-1} S^{-1} U^{-1} \; U S U^\top
+    \]
+
+    \[
+    = U U^\top.
+    \]
+\end{frame}
+
+
+\begin{frame}{Solução Analítica do Autoencoder Linear}
+    Reintroduzindo a restrição $A = DE$ obtemos:
+
+    \[
+    A^\star = D^\star E^\star = U U^\top.
+    \]
+
+    Portanto:
+
+    \[
+    D^\star = U, \qquad E^\star = U^\top.
+    \]
+
+    \begin{itemize}
+        \item Se $X$ tem posto $n$, somente as primeiras $n$ colunas de $U$ são necessárias.
+        \item Assim, o autoencoder linear aprende o mesmo subespaço do PCA.
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Interpretação: Relação Explícita com PCA}
+
+    A matriz $U$ contém os \textbf{autovetores} dos dados —  
+    exatamente as \textbf{direções principais} do PCA.
+
+    \vspace{3mm}
+
+    Portanto, a solução ótima do autoencoder linear é:
+
+    \[
+        E^\star = U^\top 
+        \quad \text{(projeção para o espaço PCA)}
+    \]
+
+    \[
+        D^\star = U
+        \quad \text{(reconstrução a partir das componentes principais)}
+    \]
+
+    \vspace{3mm}
+
+    \begin{itemize}
+        \item  O \textbf{encoder} recupera as coordenadas PCA.
+        \item  O \textbf{decoder} reconstrói os dados a partir dessas coordenadas.
+    \end{itemize}
+
+\end{frame}
+
 \section{Considerações sobre Arquitetura}
 
 \begin{frame}{Autoencoders neurais: Número de camadas}
@@ -172,7 +328,6 @@
     \item Forçam compactação dos dados (com perdas)
     \item Encoders e decoders não podem ser bons demais
   \end{itemize}
-
   \vspace{4mm}
 
   \textbf{Sobrecompletos} (overcomplete): Espaço latente pode ter dimensão maior que a entrada ($\dim(\mathcal{H}) > \dim(\mathcal{X})$)
@@ -180,6 +335,7 @@
     \item Risco de aprender a função identidade
     \item Usam \textbf{regularização} para conferir características desejáveis
   \end{itemize}
+
 
 \end{frame}
 
