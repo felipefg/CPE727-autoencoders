@@ -568,13 +568,13 @@
         \item \textbf{Mean Squared Error (MSE):}\\
         \vspace{5mm}
         \centering
-        $L(x, \tilde{x}) = \|x - \tilde{x}\|_2^2$\\
+        $L(x, z) = \|x - z\|_2^2$\\
 
         \raggedright
         \item \textbf{Cross-Entropy Loss:}\\
         \vspace{5mm}
         \centering
-        $L(x, \tilde{x}) = -\sum_{i} [x_i \log(\tilde{x}_i) + (1 - x_i) \log(1 - \tilde{x}_i)]$
+        $L(x, z) = -\sum_{i} [x_i \log(z_i) + (1 - x_i) \log(1 - z_i)]$
     \end{itemize}
 \end{frame}
 \begin{frame}{Score Matching e DAE}
