@@ -645,7 +645,201 @@
     \end{itemize}
 \end{frame}
 
+\begin{frame}{Variational Autoencoder}
+    \begin{itemize}
+        \item Diferentemente dos \textbf{Autoencoders tradicionais}, que replicam principalmente os dados de entrada, os \textbf{VAEs podem gerar novos resultados}.
+        \item Eles funcionam \textbf{identificando e aprendendo características ocultas} dos conjuntos de dados de treinamento.
+        \item Essas características aprendidas são usadas como \textbf{representação latente} para \textbf{gerar novos dados}.
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Variational Autoencoder}
+    \begin{itemize}
+        \item \textit{Criação dos VAEs surgiram da seguinte pergunta} 
+        \begin{itemize}
+            \item ``Como podemos realizar inferência e aprendizado eficientes em modelos probabilísticos direcionados, na presença de variáveis latentes contínuas com distribuições posteriores intratáveis e grandes conjuntos de dados?'' \cite{kingma2022autoencodingvariationalbayes}
+        \end{itemize}
+        \item Criado modelo para derivar um estimador de limite inferior (uma função objetivo estocástica) para uma variedade de modelos gráficos dirigidos com variáveis latentes contínuas.
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Variational Autoencoder: Encoder e Decoder}
+    \begin{columns}[T] % T alinha pelo topo
+        % Coluna da esquerda: bullet points com texto menor
+        \begin{column}{0.65\textwidth}
+            \small % reduz o tamanho do texto
+            \begin{itemize}
+                \item Esta figura apresenta dois DAGs interconectados: o \textbf{encoder} e o \textbf{decoder}.
+                
+                \item O fluxo do \textbf{encoder} (linha pontilhada) mostra a compressão de uma imagem de entrada $x$ em uma representação latente $z$. O símbolo $\phi$ representa os parâmetros do encoder.
+                
+                \item O fluxo do \textbf{decoder} (linha sólida) ilustra o processo de reconstrução, transformando $z$ em uma imagem próxima de $x$. O símbolo $\theta$ representa os parâmetros do decoder.
+                
+                \item Tanto o encoder quanto o decoder são \textbf{probabilísticos}, e suas distribuições de probabilidade apresentam \textbf{dependências condicionais}, conectadas via $z$.
+            \end{itemize}
+        \end{column}
+        
+        % Coluna da direita: imagem
+        \begin{column}{0.35\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{assets/vaeStructure.png} % substitua pelo seu arquivo de imagem
+        \end{column}
+    \end{columns}
+\end{frame}
+
+
+\begin{frame}{Variational Autoencoder: Encoder e Decoder}
+    \begin{columns}[T] % Alinha pelo topo
+        \begin{column}{0.65\textwidth}
+            \small
+            \begin{itemize}
+                % Encoder
+                \item O \textbf{encoder} modela $P(z|x)$: recebe $x$ e produz $z$.
+                
+                % Diagrama do encoder
+                \vspace{0.2cm}
+                \begin{center}
+                    \begin{tikzpicture}[node distance=1.2cm, >=Stealth, scale=0.8, transform shape]
+                        \node (x) [draw, rectangle, minimum width=1.2cm] {$x$};
+                        \node (encoder) [draw, rectangle, right=of x, minimum width=1.8cm] {Encoder $\phi$};
+                        \node (z) [draw, rectangle, right=of encoder, minimum width=1.2cm] {$z$};
+                        \draw[->, thick, green, dashed] (x) -- (encoder);
+                        \draw[->, thick, green, dashed] (encoder) -- (z);
+                    \end{tikzpicture}
+                \end{center}
+                
+                % Decoder
+                \item O \textbf{decoder} modela $P(x|z)$: recebe $z$ e reconstrói $x'$ próximo de $x$.
+                
+                % Diagrama do decoder
+                \vspace{0.2cm}
+                \begin{center}
+                    \begin{tikzpicture}[node distance=1.2cm, >=Stealth, scale=0.8, transform shape]
+                        \node (z) [draw, rectangle, minimum width=1.2cm] {$z$};
+                        \node (decoder) [draw, rectangle, right=of z, minimum width=1.8cm] {Decoder $\theta$};
+                        \node (xprime) [draw, rectangle, right=of decoder, minimum width=1.2cm] {$x'$};
+                        \draw[->, thick, green, solid] (z) -- (decoder);
+                        \draw[->, thick, green, solid] (decoder) -- (xprime);
+                    \end{tikzpicture}
+                \end{center}
+
+                % Fluxo completo
+                \vspace{0.3cm}
+                \item Fluxo completo: $x \to z \to x'$
+                \begin{center}
+                    \begin{tikzpicture}[node distance=1.2cm, >=Stealth, scale=0.75, transform shape]
+                        \node (x) [draw, rectangle, minimum width=1.2cm] {$x$};
+                        \node (encoder) [draw, rectangle, right=of x, minimum width=1.8cm] {Encoder $\phi$};
+                        \node (z) [draw, rectangle, right=of encoder, minimum width=1.2cm] {$z$};
+                        \node (decoder) [draw, rectangle, right=of z, minimum width=1.8cm] {Decoder $\theta$};
+                        \node (xprime) [draw, rectangle, right=of decoder, minimum width=1.2cm] {$x'$};
+                        \draw[->, thick, green, dashed] (x) -- (encoder);
+                        \draw[->, thick, green, dashed] (encoder) -- (z);
+                        \draw[->, thick, green, solid] (z) -- (decoder);
+                        \draw[->, thick, green, solid] (decoder) -- (xprime);
+                    \end{tikzpicture}
+                \end{center}
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Variáveis Latentes Contínuas}
+        \begin{itemize}
+        \item Se conseguirmos determinar a \textbf{distribuição das variáveis latentes} e amostrar do espaço latente:
+        \begin{itemize}
+            \item Podemos usar o decoder para gerar novas imagens.
+            \item As imagens geradas seguem a mesma estrutura e características do conjunto de treinamento.
+            \item Não é necessário fornecer a imagem de entrada ou usar o encoder.
+        \end{itemize}
+        \item Objetivo principal: \textbf{usar o decoder como gerador de imagens}.
+        \item Desafio: \textbf{determinar com precisão a distribuição das variáveis latentes \(z\) é intratável}.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Distribuições Posteriores Intratáveis}
+        \begin{itemize}
+        \item O \textbf{encoder} captura a essência da imagem de entrada \(x\) e a representa no \textbf{espaço latente}.
+        \item Ele modela a \textbf{distribuição posterior} \(P(z \mid x)\), ou seja, a probabilidade das variáveis latentes \(z\) dado os dados observados \(x\).
+        \item Determinar essa distribuição com precisão é \textbf{complexo} devido às relações intrincadas entre dados e variáveis latentes.
+        \item Essa complexidade torna a \textbf{posterior intratável}.
+        \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Distribuições Posteriores Intratáveis}
+        \[
+    P(z \mid x) = \frac{P(x \mid z) \, P(z)}{P(x)}
+    \]
+
+    \begin{itemize}
+    \item O decoder modela a verossimilhança \(P(x \mid z)\), ou seja, a probabilidade de observar uma imagem \(x\) dado as variáveis latentes \(z\).
+    \item A distribuição a priori \(P(z)\) captura nossas crenças ou suposições sobre as variáveis latentes \(z\) antes de observar qualquer imagem \(x\).
+    \item No contexto dos VAEs, nossa escolha do prior (geralmente uma distribuição normal padrão) é motivada pela conveniência computacional.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Distribuições Posteriores Intratáveis}
+\begin{itemize}
+    \item O denominador \(P(x)\) representa a verossimilhança marginal ou evidência.  
+    \item Ele quantifica a probabilidade de observar os dados da imagem \(x\) sem condicionar a qualquer valor específico de \(z\).  
+    \item Para determiná-lo, precisamos calcular a densidade de probabilidade da imagem \(x\) para cada valor possível de \(z\), e então integrar todos esses valores:  
+    \[
+    P(x) = \int P(x \mid z) P(z) \, dz
+    \]
+    \item Se pudéssemos calcular \(P(x)\) com precisão, usaríamos a distribuição posterior \(P(z \mid x)\) para amostrar as características latentes.  
+    \item No entanto, as complexidades de dados de alta dimensão, estruturas de modelo e a necessidade de integração sobre o espaço latente tornam o cálculo direto de \(P(x)\) praticamente impossível.  
+    \item Esse desafio inerente torna a \textbf{posterior \(P(z \mid x)\) intratável}.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Inferência Variacional}
+\begin{itemize}
+    \item Inferência Variacional (VI): método usado para aproximar distribuições posteriores complexas e intratáveis por distribuições mais simples e tratáveis.
+    \item Ideia principal:
+    \begin{enumerate}
+        \item Escolher uma distribuição aproximadora: selecionar uma família de distribuições, tipicamente mais simples que a posterior verdadeira, com parâmetros ajustáveis.
+        \item Otimizar para minimizar a diferença: ajustar os parâmetros da distribuição aproximadora com base nos dados observados, tornando-a o mais próxima possível da posterior verdadeira.
+    \end{enumerate}
+    \item A medida de proximidade geralmente é a divergência de Kullback-Leibler (KL).
+    \item A inferência variacional transforma o problema intratável em otimização, maximizando o \textbf{Evidence Lower Bound (ELBO)}:
+    \[
+    \log P(x) \geq \mathbb{E}_{q_\phi(z \mid x)}[\log P_\theta(x \mid z)] - D_{KL}(q_\phi(z \mid x) \| P(z))
+    \]
+    \item Em VAEs, isso permite treinar o encoder (\(q_\phi\)) e o decoder (\(P_\theta\)) de forma eficiente, mesmo com variáveis latentes contínuas e dados de alta dimensão.
+\end{itemize}
+\end{frame}
+
 \section{Aplicações}
+
+\begin{frame}{RBMs e Deep Autoencoder\cite{HinSal06}}
+\begin{itemize}
+    \item Objetivo: reduzir a dimensionalidade de dados complexos.
+    \item Abordagem:
+    \begin{itemize}
+        \item Treinar uma pilha de RBMs camada a camada (pretraining).
+        \item Cada RBM aprende features da camada anterior.
+        \item O bottleneck code na camada central representa a versão compacta dos dados.
+    \end{itemize}
+    \item Unrolling: conecta todas as RBMs em uma rede única formando um deep autoencoder.
+    \item Fine-tuning: ajuste de todos os pesos com backpropagation para minimizar erro de reconstrução.
+    \item Resultado: código de baixa dimensão que preserva estrutura não-linear dos dados, superando PCA.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Arquitetura do Deep Autoencoder}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{assets/rbm_autoencoder.png} % diminuiu a largura
+    \caption{Exemplo de arquitetura: RBMs empilhadas são "unrolled" em um deep autoencoder.}
+\end{figure}
+\end{frame}
+
+
+
 \begin{frame}{U-Net\cite{ronneberger2015unet}}
     \begin{figure}[h]
         \centering
@@ -655,8 +849,9 @@
     \end{figure}
 
     Rede Convolucional baseada em autoencoders, projetada para segmentação de imagens médicas \cite{ronneberger2015unet}.
-
 \end{frame}
+
+
 \begin{frame}{U-Net}
     \framesubtitle{Características Principais}
 
