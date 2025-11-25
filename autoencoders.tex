@@ -305,6 +305,33 @@
 
 \end{frame}
 
+\begin{frame}{Autoencoders Não Lineares}
+    \begin{itemize}
+        \item Autoencoders com \textbf{encoder e decoder não lineares} podem aprender uma generalização mais poderosa do PCA.
+        \item \textbf{Risco:} se a capacidade do encoder/decoder for muito grande, o autoencoder pode apenas \textbf{copiar os dados}, sem extrair informações úteis.
+        \item Embora não ocorra na prática, ilustra que um autoencoder treinado apenas para copiar dados \textbf{pode falhar em aprender informações úteis} se a capacidade for excessiva.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Comparações com outros modelos: t-SNE}
+    \begin{itemize}
+        \item O t-Distributed Stochastic Neighbor Embedding (t-SNE) reduz dimensões mapeando as distâncias do espaço de alta dimensão para um espaço de baixa dimensão por meio de uma distribuição de probabilidade.
+        \item Objetivo: garantir que pontos próximos no espaço original permaneçam próximos após a redução.
+        \item Usado principalmente para \textbf{visualização em 2D ou 3D}.
+        \item Útil para obter uma visão inicial da estrutura e posicionamento dos dados.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{t-SNE x Autoenconders}
+    \begin{itemize}
+        \item Autoencoders são mais versáteis e podem ser usados tanto para extração de características quanto para redução dimensional com número livre de dimensões.
+        \item Ambos (t-SNE e autoencoders) capturam relações \textbf{não lineares} nos dados e produzem representações de baixa dimensão.
+        \item Entretanto, o t-SNE é frequentemente \textbf{mais custoso computacionalmente}.
+        \item t-SNE apresenta \textbf{pouca escalabilidade} para conjuntos de dados grandes.
+        \item Autoencoders tendem a ser \textbf{mais rápidos} em tarefas comparáveis.
+    \end{itemize}
+\end{frame}
+
 \section{Considerações sobre Arquitetura}
 
 \begin{frame}{Autoencoders neurais: Número de camadas}
