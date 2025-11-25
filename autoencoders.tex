@@ -60,7 +60,7 @@
         \centering
         \includegraphics[width=0.55\textwidth]{assets/autoencoder_mnist_example.png}
         \caption{Estrutura de um autoencoder com representação latente\footnote{Figura de Umberto Michelucci \cite{UmbertoMichelucci2022}}.}
-        \label{fig:autoencoders}
+        \label{fig:autoencoders2}
     \end{figure}
     \vspace{-2mm}
     \begin{itemize}
@@ -839,6 +839,26 @@
 \end{frame}
 
 
+\begin{frame}{Deep Autoencoder Aplicado a Documentos\cite{HinSal06}}
+  \begin{columns}
+    \begin{column}{0.65\textwidth}
+      \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.9\textwidth]{assets/HinSal06-newswire.png}
+      \end{figure}
+    \end{column}
+
+    \begin{column}{0.35\textwidth}
+      \small
+      \begin{itemize}
+        \item 804k documentos do corpus Newswire
+        \item Frequencia dos 2000 radicais mais frequentes
+        \item Autoencoder 2000-500-250-125-2
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
 
 \begin{frame}{U-Net\cite{ronneberger2015unet}}
     \begin{figure}[h]
@@ -886,6 +906,19 @@
     \end{columns}
 \end{frame}
 
+
+\begin{frame}{Sparse Autoencoders para Interpretabilidade de LLMs}
+  \begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{assets/cunningham2023sae-overview.png}
+  \end{figure}
+  \begin{itemize}
+    \item Pesquisadores da EleutherAI, apresentado como poster na ICLR2023
+    \item Usa autoencoder com esparsidade por $L_1$
+    \item Espaço latente esparso a partir de estado intermediário de LLM
+    \item Usa figura de mérito de interpretabilidade de features feita com outra LLM
+  \end{itemize}
+\end{frame}
 
 \section{Referências Bibliográficas}
 \begin{frame}[allowframebreaks]
