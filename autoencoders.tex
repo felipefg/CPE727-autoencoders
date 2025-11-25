@@ -444,8 +444,7 @@
   \end{columns}
 \end{frame}
 
-\section{Denoising Autoencoders (DAE)}
-
+\section{Encoders and Decoders Estocásticos}
 
 \begin{frame}{Denoising Autoencoders (DAE)}
     \begin{columns}
@@ -644,6 +643,52 @@
             \item Objetivo: remover o ruído da entrada, aproveitando a capacidade do DAE de aprender a reconstruir entradas limpas a partir de versões ruidosas.
         \end{itemize}
     \end{itemize}
+\end{frame}
+
+\section{Aplicações}
+\begin{frame}{U-Net\cite{ronneberger2015unet}}
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.55\textwidth]{assets/unet_architecture.jpg}
+        \caption{Arquitetura U-Net típica usada para tarefas de segmentação de imagens médicas.}
+        \label{fig:unet_dae}
+    \end{figure}
+
+    Rede Convolucional baseada em autoencoders, projetada para segmentação de imagens médicas \cite{ronneberger2015unet}.
+
+\end{frame}
+\begin{frame}{U-Net}
+    \framesubtitle{Características Principais}
+
+    \begin{itemize}
+        \item \textbf{Arquitetura em U:} Composta por um caminho de contração (encoder) e um caminho de expansão (decoder), formando uma estrutura em U.
+        \item \textbf{Camadas Convolucionais:} Utiliza camadas convolucionais para capturar características espaciais das imagens.
+        \item \textbf{Skip Connections:} Conecta diretamente camadas correspondentes do encoder e decoder, preservando informações espaciais detalhadas.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{U-Net}
+    \framesubtitle{Exemplos}
+
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{figure}[h]
+                \centering
+                \includegraphics[width=\textwidth]{assets/unet_example_1.png}
+                \caption{Imagem de entrada (em cima). Imagem segmentada (em baixo).}
+                \label{fig:unet_input}
+            \end{figure}
+        \end{column}
+
+        \begin{column}{0.5\textwidth}
+            \begin{figure}[h]
+                \centering
+                \includegraphics[width=\textwidth]{assets/unet_example_2.jpg}
+                \caption{Saída de camadas intermediárias da U-Net.}
+                \label{fig:unet_output}
+            \end{figure}
+        \end{column}
+    \end{columns}
 \end{frame}
 
 

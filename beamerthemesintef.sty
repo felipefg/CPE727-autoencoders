@@ -2,7 +2,7 @@
 %
 % Adapted by Mattia Ippoliti for Politecnico di Torino and Andrea Gasparini for Sapienza
 %
-% 
+%
 % Original template by Federico Zenith, federico.zenith@sintef.no.
 % Derived (through several iterations) from Håvard Berland's
 % beamerthementnu class.
@@ -75,7 +75,7 @@
 \newcommand{\@logo}{logo}
 
 % Set colours
-% NOTE! Beamer colors should be set in the preamble. It often works fine in the 
+% NOTE! Beamer colors should be set in the preamble. It often works fine in the
 %       document itself, but NOT for normal text foreground.
 %       \themecolor should only be called from the preamble.
 \newcommand{\themecolor}[1]{
@@ -155,13 +155,13 @@
   \vspace{20mm}
   \begin{beamercolorbox}[wd=0.72\textwidth,sep=10pt,leftskip=8mm]{title}%
     {\usebeamerfont{title}\inserttitle}
-  
+
     {\usebeamerfont{subtitle}\insertsubtitle}
 
     {\usebeamerfont{subtitle}\@courseLabel}
-    
+
     {\usebeamerfont{author}\usebeamercolor[fg]{author}\textbf{\insertauthor} \ifdefempty{\@IDnumber}{}{(\@IDnumber)}}
-  
+
     {\usebeamerfont{date}\usebeamercolor[fg]{date}\insertdate}
   \end{beamercolorbox}
 }
@@ -170,10 +170,10 @@
 \newcommand{\TikzSplitSlide}[1]{%
   \rule{0.56\paperwidth}{0pt}%
   \begin{tikzpicture}
-    \clip (-0.1\paperwidth,-0.5\paperheight) -- 
-          ( 0.5\paperwidth,-0.5\paperheight) -- 
-          ( 0.5\paperwidth, 0.5\paperheight) -- 
-          ( 0.1\paperwidth, 0.5\paperheight) -- cycle; 
+    \clip (-0.1\paperwidth,-0.5\paperheight) --
+          ( 0.5\paperwidth,-0.5\paperheight) --
+          ( 0.5\paperwidth, 0.5\paperheight) --
+          ( 0.1\paperwidth, 0.5\paperheight) -- cycle;
     \node at (0.2\paperwidth,0) {%
       \includegraphics[height=\paperheight]{#1}%
     };
@@ -279,7 +279,7 @@
         \Huge \inserttitle
         \vspace{5mm}
       }\\
-      \Large \textsl{Obrigado pela Atenção! \\ Alguma Pergunta? \\ Natanael Moura Junior \\ \small \href{mailto:natmourajr@poli.ufrj.br}{natmourajr@poli.ufrj.br}, \href{mailto:natmourajr@lps.ufrj.br}{natmourajr@lps.ufrj.br}}
+      \Large \textsl{Obrigado pela Atenção! \\ Alguma Pergunta? \\ Felipe Fink Grael, Rafael Tadeu C. dos Santos, \\ Thalles Nonato Leal Santos e Jefferson Osowsky}
     \end{minipage}
   \end{frame}
 \endgroup
