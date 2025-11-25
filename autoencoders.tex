@@ -350,7 +350,7 @@
     \item \textbf{Autoencoders Esparsos:} Força esparsidade na representação latente
     \item \textbf{Denoising Autoencoders:} Perturba a entrada com ruído e reconstrói a entrada limpa
     \item \textbf{Contractive Autoencoders:} Penaliza o jacobiano do encoder em relação à entrada
-    \item \textbf{Variational Autoencoders:} Espaço latente se torna uma distribuição probabilística
+    \item \textbf{Variational Autoencoders:} Trata o espaço latente como uma variável aleatória com distribuição aprendida
   \end{itemize}
 
 \end{frame}
@@ -359,13 +359,62 @@
 
     \textbf{Objetivo:} Forçar a representação latente a ser esparsa, ou seja, a maioria dos neurônios na camada latente deve estar inativa (valores próximos de zero).
 
-    \vspace{2mm}
-
-    \textbf{Função de Custo Modificada:}
     $$
-    L(\theta, \phi) = \|x - \hat{x}\|^2_2 + \alpha \|h\|_1
+    L(x) = L_{\text{reconstrução}}(x) + \Omega(x)
     $$
 
+  \vspace{3mm}
+
+  \begin{columns}[t]
+
+    \begin{column}{0.5\textwidth}
+      \small{\textbf{Norma $L_1$ do espaço latente:}}
+      $$
+      \Omega(x) = \alpha \sum_x \| f(x) \|_1
+      $$
+      \footnotesize
+      \begin{itemize}
+          \item Penaliza diretamente as ativações
+          \item Mais fácil de implementar
+          \item Promove esparsidade indiretamente
+      \end{itemize}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      \small{\textbf{Divergência KL}}
+      $$
+      \Omega(x) = \alpha \sum_{j} KL(\rho \| \hat{\rho}_j), \  \hat{\rho}_j = \frac{1}{N} \sum_{x} f_j(x)
+      $$
+      \footnotesize
+      \begin{itemize}
+          \item Divergência entre ativações e Bernoulli
+          \item Maior controle sobre esparsidade
+          \item $\rho$: taxa de ativação desejada (pequeno, ex: 0.05)
+          \item $\hat{\rho}_j$: ativação média do neurônio $j$
+      \end{itemize}
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+
+\begin{frame}{Sparse Autoencoders: Interpretabilidade}
+
+  \small{Com poucos neurônios ativos, os sparse autoencoders tendem a aprender representações mais interpretáveis e robustas.}
+
+  \begin{columns}[b]
+    \begin{column}{0.60\textwidth}
+      \begin{figure}[H]
+        \centering
+        \includegraphics[width=\textwidth]{assets/stevens2025rigorous-fig2.png}
+      \end{figure}
+    \end{column}
+
+    \begin{column}{0.4\textwidth}
+      \footnotesize{Características aprendidas por um sparse autoencoder aplicado nas ativações da camada 11 de um modelo ViT-Base/16 (12 camadas). O SAE tem fator de expansão de 32 (dimensão 768 na entrada e saída, 24576 no espaço latente). \cite{stevens2025rigorous}.}
+    \end{column}
+
+  \end{columns}
 \end{frame}
 
 \section{Denoising Autoencoders (DAE)}
@@ -577,6 +626,33 @@
     \bibliographystyle{ieeetr}
     \bibliography{presentation_bib.bib}
 \end{frame}
+
+
+\section{Anexos}
+
+\begin{frame}{Divergência Kullback-Leibler}
+
+  \textbf{Entropia de $P$:} Custo ótimo para codificar dados de $P$
+
+  $$H(P) = \mathbb{E}_{x \sim P}[-\log P(x)] = - \sum_x P(x) \log P(x)$$
+
+  \vspace{3mm}
+
+  \textbf{Entropia Cruzada:} Custo de usar código ótimo para $Q$ em dados de $P$
+
+  $$H_{\text{cross}}(P, Q) = \mathbb{E}_{x \sim P}[-\log Q(x)] = - \sum_x P(x) \log Q(x)$$
+
+  \vspace{3mm}
+
+  \textbf{Divergência KL:} o quão pior é $Q$ comparado ao ótimo $P$.
+
+  \begin{equation*}
+    \boxed{D_{KL}(P \| Q) = H_{\text{cross}}(P, Q) - H(P) = \sum_x P(x) \log \frac{P(x)}{Q(x)}}
+  \end{equation*}
+
+
+\end{frame}
+
 
 \backmatter
 \end{document}
