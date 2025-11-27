@@ -28,7 +28,114 @@
 % Autoencoder: Motivação
 % ============================
 
-% \section{Autoencoder Simples}
+\section{Autoencoder Simples}
+\begin{frame}{Dataset}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.6\textwidth]{assets/fashionMnist.png}
+        \caption{Fashion MNIST}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Modelo}
+    \begin{columns}
+        \begin{column}{0.7\textwidth}
+            \begin{itemize}
+                \item Input: imagens 28x28x1 (Fashion MNIST)
+                \item Encoder:
+            \begin{itemize}
+                \item 2 Camadas Lineares (Fully Connected)
+                \item Primeira camada: transforma $28 \times 28 \rightarrow 128$ unidades
+                \item Segunda camada: transforma $128 \rightarrow 64$ unidades
+                \item Função de ativação ReLU após cada camada
+            \end{itemize}
+
+        \item Decoder:
+            \begin{itemize}
+                \item 2 Camadas Lineares (Fully Connected)
+                \item Primeira camada: transforma $64 \rightarrow 128$ unidades
+                \item Segunda camada: transforma $128 \rightarrow 28 \times 28$ unidades
+                \item Função de ativação ReLU nas camadas intermediárias
+                \item Ativação final Sigmoid para normalizar a saída em $[0, 1]$
+            \end{itemize}
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.3\textwidth}
+            \begin{figure}
+                \centering
+                \includegraphics[width=0.75\textwidth]{assets/autoenconderArc.png}
+            \end{figure}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Metodologia}
+    \begin{itemize}
+        \item Aplicação de \textbf{K-Fold Cross-Validation} (K=5).
+        \item Learning Rate 0.0003.
+        \item 150 epocas.
+        \item Treinamento separado para cada fold.
+        \item Uso do otimizador \textbf{Adam}.
+        \item Loss MSE.
+        \item Cálculo do \textbf{SSIM} na validação.
+        \item Treinamento final utilizando todo o dataset.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Resultados}
+    \begin{figure}
+        \centering
+        \begin{minipage}{0.48\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{assets/ae-train_loss.png}
+        \end{minipage}
+        \hfill
+        \begin{minipage}{0.48\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{assets/ae-val_loss.png}
+        \end{minipage}
+    \end{figure}
+\end{frame}
+
+
+\begin{frame}{Resultados}
+    \begin{figure}
+        \centering
+        \begin{minipage}{0.48\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{assets/ae-train_loss.png}
+        \end{minipage}
+        \hfill
+        \begin{minipage}{0.48\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{assets/ae-val_loss.png}
+        \end{minipage}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Resultados}
+    \begin{figure}
+        \centering
+        \begin{minipage}{0.48\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{assets/ae-learningCurveFolds.png}
+        \end{minipage}
+        \hfill
+        \begin{minipage}{0.48\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{assets/ae-SSIM.png}
+        \end{minipage}
+    \end{figure}
+\end{frame}
+
+
+\begin{frame}{Resultados}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.6\textwidth]{assets/generatedAE.png}
+        \caption{Output do modelo - SSIM 0.7 no conjunto de teste}
+    \end{figure}
+\end{frame}
 
 \section{Denoising Autoencoder}
 
