@@ -93,7 +93,39 @@
 \end{frame}
 
 % \section{Variational Autoencoder}
-% \section{Geração de Embeddings com Autoencoders}
+%
+\section{Reuter Corpus com Autoencoder}
+\begin{frame}{Reuter Corpus V1}
+    \begin{itemize}
+        \item Coleção de 804.414 artigos de notícias da Reuters (1996-1997)
+        \item 103 categorias de tópicos organizadas hierarquicamente
+        \item Classificação multi-label: cada documento pode pertencer a múltiplas categorias
+        \item Categorias abrangem temas como economia, política, esportes, tecnologia, etc.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Método}
+    \begin{itemize}
+        \item Objetivo: Replicar o plot do Hinton (2006)
+        \item Autoencoder com mesma arquitetura (2000, 500, 250, 125, 2)
+        \item Ativação linear na camada do espaço latente, e Leaky ReLU nas demais
+        \item Otimização com AdamW, sem pré-treino
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Evolução do treino}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.8\textwidth]{assets/rcv1_train.png}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Resultado}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.8\textwidth]{assets/rcv1_scatter.png}
+    \end{figure}
+\end{frame}
 
 \section{Anexos}
 
